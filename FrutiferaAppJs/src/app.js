@@ -1,9 +1,11 @@
+// Importa as classes
 import Fruteira from './Fruteira.js';
 import FruteiraStorage from './FruteiraStorage.js';
 
+// Aqui o DOM vai executar o código somente após o html ser carregado
 document.addEventListener("DOMContentLoaded", () => {
   
-//Garante que os elementos da página já existam antes de manipulá-los.
+//Carrega as frutas que ja tem salvas 
   carregarFruteiras();
   
 //Chama a função que carrega e exibe as frutas já cadastradas.
@@ -16,9 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+//Essa função é responsavel por cadastrar uma nova fruta
 function cadastrarFruteira(e) {
-  e.preventDefault();
-  //Impede a pagina recarregar e apagar os dados
+  e.preventDefault(); // Vai impedir de recarregar e perder os dados
 
   //Captura os valores digitados pelo usuário nos campos do formulário.
   const nomePopular = document.getElementById("especie").value;
@@ -26,7 +28,7 @@ function cadastrarFruteira(e) {
   const producaoMedia = document.getElementById("producao").value;
   const dataPlantio = document.getElementById("dataPlantio").value;
 
-  // Validação simples da data
+  // Vai validar a data
   if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dataPlantio)) {
     alert("Data inválida! Use dd/mm/aaaa");
     return;
@@ -35,7 +37,7 @@ function cadastrarFruteira(e) {
   //  Geração automática do ID numérico e único
   const id = Date.now();
   
-  // Cria o objeto fruteira
+  // Cria o novo objeto  fruteira
   const fruteira = new Fruteira(
     id,
     nomePopular,
@@ -61,12 +63,14 @@ function cadastrarFruteira(e) {
   carregarFruteiras();
 }
 
+//Essa função vai listar as frutas
 function carregarFruteiras() {
 
+  //Vai selecioonar onde os cards vão ser exibidos
   const container = document.getElementById("listaFrutas");
   container.innerHTML = "";
 
-  //Busca todas as frutas salvas
+  //Busca todas as frutas salvas la no localStorege
   const fruteiras = FruteiraStorage.buscar();
 
   //Se não tiver fruta cadastrada ainda
@@ -78,7 +82,7 @@ function carregarFruteiras() {
   //Percorre as frutas salvas 
   fruteiras.forEach(f => {
 
-    //Permite calcular a idade, pois gera um novo objeto
+    //Vai criar um novo objeto pra calcular a idade
     const frut = new Fruteira(
       f.id,
       f.nomePopular,
@@ -86,17 +90,8 @@ function carregarFruteiras() {
       f.producaoMedia,
       f.dataPlantio
     );
-    //Faz parte do botão Apagar
-window.deletarFruteira = function(id) {
-
-  if (!confirm("Tem certeza que deseja APAGAR essa fruta?")) {
-    return;
-  }
-
-  FruteiraStorage.remover(id);
-  carregarFruteiras();
-};
-    //Adiciona um card no HTML para cada fruta
+   
+    //Adiciona um card la no HTML para cada fruta
   container.innerHTML += `
   <div class="col-md-4 mb-3">
     <div class="card shadow-sm">
@@ -115,16 +110,10 @@ window.deletarFruteira = function(id) {
         </li>
       </ul>
 
-          <button 
-            class="btn btn-danger btn-sm"
-            onclick="deletarFruteira(${f.id})">
-            Apagar
-          </button>
     </div>
   </div>
 `;
   });
-
-
 }
+
 
